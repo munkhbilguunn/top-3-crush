@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Хамгийн таалагдсан 3 хүнээ сонгоорой</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0;
+      padding: 30px;
+    }
+    img {
+      max-width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .next-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    .keep-btn {
+      background-color: #28a745;
+      color: white;
+    }
+    .remove-btn {
+      background-color: #dc3545;
+      color: white;
+      font-size: 12px;
+      padding: 5px 10px;
+      margin-left: 5px;
+    }
+    .kept-images {
+      margin-top: 20px;
+    }
+    .kept-images div {
+      display: inline-block;
+      position: relative;
+      margin: 5px;
+    }
+    .kept-images img {
+      max-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Хамгийн таалагдсан 3 хүнээ сонгоорой</h1>
+  <img id="celebrityImage" src="images/001.jpg" alt="연예인 사진">
+  <div>
+    <button class="keep-btn" onclick="keepImage()">хадгалъя</button>
+    <button class="next-btn" onclick="showNextImage()">дараагийнх</button>
+  </div>
+
+  <div class="kept-images">
+    <h3>TOP 3 </h3>
+    <div id="keptList"></div>
+  </div>
+
+  <div id="finalResult" style="display:none;">
+    <h2>💖 Эцсийн сонголт 💖</h2>
+    <div id="finalList"></div>
+  </div>
+
+  <script>
+    const totalImages = 31;
+    let currentIndex = 1;
+    const kept = [];
+
+    function showNextImage() {
+      if (currentIndex < totalImages) {
+        currentIndex++;
+        updateImage();
+      } else {
+        showFinalResult();
+      }
+    }
+
+    function updateImage() {
+      const imageNumber = String(currentIndex).padStart(3, '0');
+      document.getElementById('celebrityImage').src = `images/${imageNumber}.jpg`;
+    }
+
+    function keepImage() {
+      const currentImage = `images/${String(currentIndex).padStart(3, '0')}.jpg`;
+      if (kept.includes(currentImage)) {
+        alert("이미 선택한 이미지입니다.");
+        return;
+      }
+      if (kept.length < 3) {
+        kept.push(currentImage);
+      } else {
+        alert("3 хүн сонгочихсон байна. Нэгийг нь хасаад дахиад нэмнэ үү.");
+        return;
+      }
+      renderKeptList();
+    }
+
+    function removeImage(index) {
+      kept.splice(index, 1);
+      renderKeptList();
+    }
+
+    function renderKeptList() {
+      const list = document.getElementById('keptList');
+      list.innerHTML = '';
+      kept.forEach((src, index) => {
+        const wrapper = document.createElement('div');
+        const img = document.createElement('img');
+        img.src = src;
+        const btn = document.createElement('button');
+        btn.className = 'remove-btn';
+        btn.innerText = 'хасах';
+        btn.onclick = () => removeImage(index);
+        wrapper.appendChild(img);
+        wrapper.appendChild(btn);
+        list.appendChild(wrapper);
+      });
+    }
+
+    function showFinalResult() {
+      document.querySelector('img').style.display = 'none';
+      document.querySelector('.keep-btn').style.display = 'none';
+      document.querySelector('.next-btn').style.display = 'none';
+      document.getElementById('finalResult').style.display = 'block';
+
+      const finalList = document.getElementById('finalList');
+      finalList.innerHTML = '';
+      kept.forEach((src, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `<h3>TOP ${idx + 1}</h3><img src="${src}" style="max-width:200px">`;
+        finalList.appendChild(wrapper);
+      });
+    }
+  </script>
+</body>
+</html>
